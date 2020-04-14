@@ -14,33 +14,31 @@ import {
 
 const { height, width } = Dimensions.get('window')
 
-function GridImg ({ smallImgURL, bigImgURL, navigation }) {
+function GridImg({ smallImgURL, bigImgURL, navigation }) {
   return (
     <View style={styles.gridBtn}>
-
       <TouchableOpacity
-        onPress={() => navigation.navigate('BigPic', {
-          bigImgURL: bigImgURL,
-          smallImgURL: smallImgURL
-        })}
+        onPress={() =>
+          navigation.navigate('BigPic', {
+            bigImgURL,
+            smallImgURL
+          })
+        }
         style={styles.item}
       >
-        <Image
-          style={styles.gridImg}
-          source={{ uri: smallImgURL }}
-        />
+        <Image style={styles.gridImg} source={{ uri: smallImgURL }} />
       </TouchableOpacity>
     </View>
   )
 }
 let id = 0
-export default function App ({ navigation }) {
+export default function App({ navigation }) {
   const [favoritesArr, setFavoritesArr] = useState(null)
-  const [noFav, setNoFav] = useState(false) // false == there is res
+  const [noFav, setNoFav] = useState(false)
 
   useEffect(() => {
     const fetchFav = async () => {
-      const { favArr } = await AsyncStorage.getItem('favPics').then(res => JSON.parse(res))
+      const { favArr } = await AsyncStorage.getItem('favPics').then((res) => JSON.parse(res))
       if (favArr.length > 0) {
         setFavoritesArr(favArr)
       } else {
@@ -54,32 +52,30 @@ export default function App ({ navigation }) {
     }
   }, [])
 
-  return (
-    noFav ? (
-      <View style={styles.noFav}>
-        <Text style={styles.title}> No Favoriets! </Text>
-        <Image resizeMode="cover" source={require('../assets/sekscr2ez.gif')} />
-      </View>
-    )
-      : favoritesArr === null ? (<ActivityIndicator size={100} color="#000000" />)
-        : (
-          <SafeAreaView style={styles.container} >
-            <FlatList
-              horizontal={false}
-              numColumns={3}
-              keyExtractor={(item, index) => index.toString()}
-              data={favoritesArr}
-              renderItem={({ item }) => (
-                <GridImg
-                  id={id++}
-                  smallImgURL={item.smallImgURL}
-                  bigImgURL = {item.bigImgURL}
-                  navigation={navigation}
-                />
-              )}
-              keyExtractor={() => id++}
-            />
-          </SafeAreaView>)
+  return noFav ? (
+    <View style={styles.noFav}>
+      <Text style={styles.title}> No Favoriets! </Text>
+      <Image resizeMode="cover" source={require('../assets/sekscr2ez.gif')} />
+    </View>
+  ) : favoritesArr === null ? (
+    <ActivityIndicator size={100} color="#000000" />
+  ) : (
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        horizontal={false}
+        numColumns={3}
+        keyExtractor={(item, index) => index.toString()}
+        data={favoritesArr}
+        renderItem={({ item }) => (
+          <GridImg
+            id={id++}
+            smallImgURL={item.smallImgURL}
+            bigImgURL={item.bigImgURL}
+            navigation={navigation}
+          />
+        )}
+      />
+    </SafeAreaView>
   )
 }
 
@@ -97,15 +93,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginBottom: 6
   },
-  flatList: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start'
-  },
-  titleText: {
-    fontSize: 17,
-    fontWeight: 'bold'
-  },
   noFav: {
     flex: 1,
     alignItems: 'center',
@@ -118,7 +105,7 @@ const styles = StyleSheet.create({
   },
   gridImg: {
     flexBasis: 100,
-    width: (width / 3) - 5,
+    width: width / 3 - 5,
     height: height / 4
   }
 })

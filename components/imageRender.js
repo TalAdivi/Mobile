@@ -15,49 +15,43 @@ import axios from 'axios'
 
 const { height, width } = Dimensions.get('window')
 
-// Grid Based
-function GridImg ({ smallImgURL, bigImgURL, navigation }) {
+
+function GridImg({ smallImgURL, bigImgURL, navigation }) {
   return (
     <View style={styles.gridBtn}>
-
       <TouchableOpacity
-        onPress={() => navigation.navigate('BigPic', {
-          bigImgURL: bigImgURL,
-          smallImgURL: smallImgURL
-        })}
-        style={ styles.item }
+        onPress={() =>
+          navigation.navigate('BigPic', {
+            bigImgURL,
+            smallImgURL
+          })
+        }
+        style={styles.item}
       >
-        <Image
-          style={styles.gridImg}
-          source={{ uri: smallImgURL }}
-        />
+        <Image style={styles.gridImg} source={{ uri: smallImgURL }} />
       </TouchableOpacity>
     </View>
   )
 }
 
-// List Based
 
-function ListImg ({ smallImgURL, bigImgURL, navigation, views, likes }) {
+function ListImg({ smallImgURL, bigImgURL, navigation, views, likes }) {
   return (
-    <View style={{ margin: 3, marginVertical: 6 }}>
+    <View style={styles.viewList}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('BigPic', {
-          bigImgURL: bigImgURL,
-          smallImgURL: smallImgURL
-        })}
-        style={ styles.item }
+        onPress={() =>
+          navigation.navigate('BigPic', {
+            bigImgURL,
+            smallImgURL
+          })
+        }
+        style={styles.item}
       >
-        <View style={{ flexDirection: 'row' }}>
-          <Image
-            style={styles.listImg}
-            source={{ uri: smallImgURL }}
-          />
-          <View
-            style={styles.listText}
-          >
+        <View style={styles.viewListText}>
+          <Image style={styles.listImg} source={{ uri: smallImgURL }} />
+          <View style={styles.listText}>
             <Text style={styles.titleText}> Views: {views} </Text>
-            <Text style={styles.titleText} > Likes: {likes} </Text>
+            <Text style={styles.titleText}> Likes: {likes} </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -65,19 +59,19 @@ function ListImg ({ smallImgURL, bigImgURL, navigation, views, likes }) {
   )
 }
 
-export default function App ({ searchQuery, navigation, mode }) {
+export default function App({ searchQuery, navigation, mode }) {
   const [photos, setPhotos] = useState(null)
-  const [noRes, setNoRes] = useState(false) // false == there is res
+  const [noRes, setNoRes] = useState(false) 
 
   const APIKey = '15915873-d72824a83d0bc6d915ef0da5b'
-  const pixabayURL = `https://pixabay.com/api/?key=${APIKey}&q=${searchQuery}`
+  const pixabayURL = `https:pixabay.com/api/?key=${APIKey}&q=${searchQuery}`
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios({
         method: 'get',
         url: `${pixabayURL}`
-      }).then(res => res.data)
+      }).then((res) => res.data)
       if (res.totalHits > 0) {
         setNoRes(false)
         setPhotos(res.hits)
@@ -92,7 +86,7 @@ export default function App ({ searchQuery, navigation, mode }) {
     }
   }, [searchQuery])
 
-  function GridView () {
+  function GridView() {
     return (
       <FlatList
         horizontal={false}
@@ -104,54 +98,46 @@ export default function App ({ searchQuery, navigation, mode }) {
             id={item.id}
             title={'item.title'}
             smallImgURL={item.previewURL}
-            bigImgURL = {item.largeImageURL}
+            bigImgURL={item.largeImageURL}
             navigation={navigation}
           />
         )}
-        keyExtractor={item => item.id.toString()}
       />
     )
   }
 
-  function ListView () {
+  function ListView() {
     return (
       <FlatList
         data={photos}
-        renderItem={
-          ({ item }) =>
-            <ListImg
-              title={item.previewURL}
-              title={'item.title'}
-              smallImgURL={item.previewURL}
-              bigImgURL = {item.largeImageURL}
-              navigation={navigation}
-              views = {item.views}
-              likes = {item.likes}
-            />}
-
-        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => (
+          <ListImg
+            title={item.previewURL}
+            smallImgURL={item.previewURL}
+            bigImgURL={item.largeImageURL}
+            navigation={navigation}
+            views={item.views}
+            likes={item.likes}
+          />
+        )}
+        keyExtractor={(item) => item.id.toString()}
       />
     )
   }
 
-  return (
-    noRes ? (
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        <Text style={styles.title} > No Results  </Text>
-        <Text style={styles.title} > Were found!  </Text>
-      
-        <Image resizeMode="cover" source={require('../assets/sekscr2ez.gif')} />
-      </View>
-    )
-      : photos === null ? (<ActivityIndicator size={100} color="#000000" />)
+  return noRes ? (
+    <View style={styles.viewLoading}>
+      <Text style={styles.title}> No Results </Text>
+      <Text style={styles.title}> Were found! </Text>
 
-        : (
-          <SafeAreaView style={styles.container} >
-            {
-              mode === 'Grid' ? <GridView /> : <ListView/>
-            }
-          </SafeAreaView>)
-
+      <Image resizeMode="cover" source={require('../assets/sekscr2ez.gif')} />
+    </View>
+  ) : photos === null ? (
+    <ActivityIndicator size={100} color="#000000" />
+  ) : (
+    <SafeAreaView style={styles.container}>
+      {mode === 'Grid' ? <GridView /> : <ListView />}
+    </SafeAreaView>
   )
 }
 
@@ -169,11 +155,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginBottom: 6
   },
-  flatList: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start'
-  },
   titleText: {
     fontSize: 17,
     fontWeight: 'bold'
@@ -185,7 +166,7 @@ const styles = StyleSheet.create({
   },
   gridImg: {
     flexBasis: 100,
-    width: (width / 3) - 5,
+    width: width / 3 - 5,
     height: height / 4
   },
   listText: {
@@ -198,7 +179,18 @@ const styles = StyleSheet.create({
   },
   listImg: {
     flexBasis: 100,
-    width: (width / 5) - 5,
+    width: width / 5 - 5,
     height: height / 8
+  },
+  viewList: {
+    margin: 3,
+    marginVertical: 6
+  },
+  viewListText: {
+    flexDirection: 'row'
+  },
+  viewLoading: {
+    flex: 1,
+    alignItems: 'center'
   }
 })

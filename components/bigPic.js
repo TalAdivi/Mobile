@@ -4,18 +4,18 @@ import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 const { width } = Dimensions.get('window')
 
-export default function MyStack ({ route, navigation }) {
+export default function MyStack({ route }) {
   const { bigImgURL, smallImgURL } = route.params
   const [loading, setLoading] = useState(false)
   const [isFav, setIsFav] = useState(true)
 
   const addToFav = async () => {
     try {
-      const { favArr } = await AsyncStorage.getItem('favPics').then(res => JSON.parse(res))
+      const { favArr } = await AsyncStorage.getItem('favPics').then((res) => JSON.parse(res))
 
       favArr.push({ bigImgURL, smallImgURL })
 
-      await AsyncStorage.setItem('favPics', JSON.stringify({ favArr: favArr }))
+      await AsyncStorage.setItem('favPics', JSON.stringify({ favArr }))
       setIsFav(true)
     } catch (e) {
       console.log(e.message)
@@ -24,7 +24,7 @@ export default function MyStack ({ route, navigation }) {
 
   const checkPicIsFav = async () => {
     try {
-      const { favArr } = await AsyncStorage.getItem('favPics').then(res => JSON.parse(res))
+      const { favArr } = await AsyncStorage.getItem('favPics').then((res) => JSON.parse(res))
       console.log('value === ', favArr)
       if (favArr.length > 0) {
         for (const url of favArr) {
@@ -36,7 +36,7 @@ export default function MyStack ({ route, navigation }) {
       }
       setIsFav(false)
     } catch (e) {
-      // error reading value
+
       console.log(e.message)
     }
   }
@@ -47,43 +47,33 @@ export default function MyStack ({ route, navigation }) {
 
   return (
     <>
-      {loading && <View style={styles.container}>
-
-        <Image style={{ alignSelf: 'center' }} source={require('../assets/ajax-loader.gif')} />
-      </View>}
+      {loading && (
+        <View style={styles.container}>
+          <Image style={styles.alignSelf} source={require('../assets/ajax-loader.gif')} />
+        </View>
+      )}
       <View style={styles.container}>
         <View style={styles.content}>
-
           <Image
-            style={{
-              flex: 1,
-              alignSelf: 'center',
-              width: width,
-              height: 1,
-              resizeMode: 'contain'
-            }}
-            resizeMethod= "resize"
+            style={styles.bigImg}
+            resizeMethod="resize"
             source={{ uri: bigImgURL }}
-            onLoadStart = {() => setLoading(true)}
-            onLoadEnd = {() => setLoading(false)}
+            onLoadStart={() => setLoading(true)}
+            onLoadEnd={() => setLoading(false)}
           />
         </View>
 
-        <View style={{ minHeight: 70 }}>
-          { !isFav && (<Button
-            color="#000000"
-            buttonStyle={styles.favoritesButton}
-
-            icon={
-              <Icon
-                name="heart"
-                size={45}
-              />
-            }
-            title=""
-            iconContainerStyle
-            onPress={addToFav}
-          />) }
+        <View style={styles.likeBtnHeight}>
+          {!isFav && (
+            <Button
+              color="#000000"
+              buttonStyle={styles.favoritesButton}
+              icon={<Icon name="heart" size={45} />}
+              title=""
+              iconContainerStyle
+              onPress={addToFav}
+            />
+          )}
         </View>
       </View>
     </>
@@ -148,5 +138,18 @@ const styles = StyleSheet.create({
   },
   favoritesButton: {
     backgroundColor: 'transparent'
+  },
+  bigImg: {
+    flex: 1,
+    alignSelf: 'center',
+    width,
+    height: 1,
+    resizeMode: 'contain'
+  },
+  alignSelf: {
+    alignSelf: 'center'
+  },
+  likeBtnHeight: {
+    minHeight: 70
   }
 })
