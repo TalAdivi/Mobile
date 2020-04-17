@@ -15,6 +15,7 @@ import axios from 'axios'
 
 const { height, width } = Dimensions.get('window')
 
+
 function GridImg({ smallImgURL, bigImgURL, navigation }) {
   return (
     <View style={styles.gridBtn}>
@@ -33,7 +34,8 @@ function GridImg({ smallImgURL, bigImgURL, navigation }) {
   )
 }
 
-function ListImg({ smallImgURL, bigImgURL, navigation, views, likes, userName }) {
+
+function ListImg({ smallImgURL, bigImgURL, navigation, views, likes }) {
   return (
     <View style={styles.viewList}>
       <TouchableOpacity
@@ -49,11 +51,6 @@ function ListImg({ smallImgURL, bigImgURL, navigation, views, likes, userName })
           <Image style={styles.listImg} source={{ uri: smallImgURL }} />
           <View style={styles.listText}>
             <Text style={styles.titleText}> Views: {views} </Text>
-          </View>
-          <View style={styles.listText}>
-            <Text style={styles.titleTextName}> {userName} </Text>
-          </View>
-          <View style={styles.listText}>
             <Text style={styles.titleText}> Likes: {likes} </Text>
           </View>
         </View>
@@ -64,7 +61,7 @@ function ListImg({ smallImgURL, bigImgURL, navigation, views, likes, userName })
 
 export default function App({ searchQuery, navigation, mode }) {
   const [photos, setPhotos] = useState(null)
-  const [noRes, setNoRes] = useState(false)
+  const [noRes, setNoRes] = useState(false) 
 
   const APIKey = '15915873-d72824a83d0bc6d915ef0da5b'
   const pixabayURL = `https:pixabay.com/api/?key=${APIKey}&q=${searchQuery}`
@@ -121,7 +118,6 @@ export default function App({ searchQuery, navigation, mode }) {
             navigation={navigation}
             views={item.views}
             likes={item.likes}
-            userName={item.user}
           />
         )}
         keyExtractor={(item) => item.id.toString()}
@@ -160,11 +156,8 @@ const styles = StyleSheet.create({
     marginBottom: 6
   },
   titleText: {
-    fontSize: 15,
-    fontWeight: '100',
-    alignSelf: 'flex-end',
-    justifyContent: 'space-between',
-    color: '#616161'
+    fontSize: 17,
+    fontWeight: 'bold'
   },
   gridBtn: {
     flex: 1,
@@ -177,10 +170,12 @@ const styles = StyleSheet.create({
     height: height / 4
   },
   listText: {
+    flex: 1,
     flexDirection: 'row',
-    marginLeft: 5,
-    height: height / 8,
-    minWidth: width / 4
+    marginLeft: 9,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    height: height / 8
   },
   listImg: {
     flexBasis: 100,
@@ -189,22 +184,13 @@ const styles = StyleSheet.create({
   },
   viewList: {
     margin: 3,
-    marginVertical: 6,
-    minWidth: width - 5
+    marginVertical: 6
   },
   viewListText: {
-    flexDirection: 'row',
-    minWidth: width - 5,
-    justifyContent: 'space-evenly'
+    flexDirection: 'row'
   },
   viewLoading: {
     flex: 1,
     alignItems: 'center'
-  },
-  titleTextName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    color: '#212121'
   }
 })
